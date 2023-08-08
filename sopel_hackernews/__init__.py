@@ -5,21 +5,55 @@ Hacker News plugin for Sopel.
 """
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+from datetime import datetime
 import html
 from urllib.parse import urlparse
 
+import pytz
 import requests
 
 from sopel import plugin
+from sopel.config import types
+from sopel.tools import time
 
 
 HN_PATTERN = 'https?:\/\/news\.ycombinator\.com\/item\?id=(?P<ID>\d+)'
 PLUGIN_PREFIX = '[Hacker News] '
 
 
+class HackerNewsSection(types.StaticSection):
+    relative_timestamps = types.BooleanAttribute('relative_timestamps', default=True)
+
+
+def setup(bot):
+    bot.settings.define_section('hackernews', HackerNewsSection)
+
+
 def clean_hn_text(text):
     """Deal with HN weirdness like <p> for line breaks, HTML entities, etc."""
     return html.unescape(text.replace('<p>', ' \N{RETURN SYMBOL} '))
+
+
+def get_formatted_timestamp(ts, channel, bot):
+    """Get formatted timestamp based on the channel and the bot's settings."""
+    ts = datetime.fromtimestamp(ts, tz=pytz.utc)
+
+    if bot.settings.hackernews.relative_timestamps:
+        now = datetime.now(tz=pytz.utc)
+        return time.seconds_to_human(now - ts)
+
+    zone = time.get_timezone(
+        db=bot.db,
+        config=bot.settings,
+        channel=channel,
+    )
+    return time.format_time(
+        db=bot.db,
+        config=bot.settings,
+        zone=zone,
+        channel=channel,
+        time=ts,
+    )
 
 
 @plugin.commands('reversehn', 'rhn')
@@ -39,14 +73,14 @@ def reverse_hn(bot, trigger):
     try:
         item = results['hits'][0]
 
-        # TODO: timestamp
         bot.say(
             'Story: ' + item['title'],
-            truncation = '…',
-            trailing = ' | ▲ {score} | 🗨️ {comments} | {hn_link}'.format(
-                score = item['points'],
-                comments = item['num_comments'],
-                hn_link = 'https://news.ycombinator.com/item?id=' + item['objectID'],
+            truncation='…',
+            trailing=' | ▲ {score} | 🗨️ {comments} | {when} | {hn_link}'.format(
+                score=item['points'],
+                comments=item['num_comments'],
+                when=get_formatted_timestamp(item['created_at_i'], trigger.sender, bot),
+                hn_link='https://news.ycombinator.com/item?id=' + item['objectID'],
             )
         )
     except:
@@ -64,25 +98,26 @@ def forward_hn(bot, trigger):
         bot.say("No HN item found.")
         return
 
-    # TODO: timestamps
     if item['type'] == 'comment':
         bot.say(
-            'Comment by {author}: {text}'.format(
-                author = item['by'],
-                text = clean_hn_text(item['text']),
+            'Comment by {author} ({when}): {text}'.format(
+                author=item['by'],
+                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
+                text=clean_hn_text(item['text']),
             ),
-            truncation = ' […]',
+            truncation=' […]',
         )
     else:
         domain = urlparse(item['url']).hostname
 
         bot.say(
-            'Story: {title}{dead} | ▲ {score} | 🗨️ {comments} | {url}'.format(
-                title = item['title'],
-                dead = ' [DEAD]' if item.get('dead') else '',
-                score = item['score'],
-                comments = item['descendants'],
-                url = item['url'],
+            'Story: {title}{dead} | ▲ {score} | 🗨️ {comments} | {when} | {url}'.format(
+                title=item['title'],
+                dead=' [DEAD]' if item.get('dead') else '',
+                score=item['score'],
+                comments=item['descendants'],
+                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
+                url=item['url'],
             ),
-            truncation = ' ' + domain,
+            truncation=' ' + domain,
         )
