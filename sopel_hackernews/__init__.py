@@ -83,8 +83,8 @@ def reverse_hn(bot, trigger):
                 hn_link='https://news.ycombinator.com/item?id=' + item['objectID'],
             )
         )
-    except:
-        bot.say("No HN discussion found")
+    except (IndexError, KeyError, TypeError):
+        bot.say("No HN discussion found for that link.")
 
 
 @plugin.url(HN_PATTERN)
@@ -95,7 +95,7 @@ def forward_hn(bot, trigger):
     ).json()
 
     if item is None:
-        bot.say("No HN item found.")
+        bot.say("Item {} not found.".format(trigger.group('ID')))
         return
 
     if item['type'] == 'comment':
