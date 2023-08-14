@@ -100,7 +100,8 @@ def forward_hn(bot, trigger):
 
     if item['type'] == 'comment':
         bot.say(
-            'Comment by {author} ({when}): {text}'.format(
+            'Comment{dead} by {author} ({when}): {text}'.format(
+                dead=' [DEAD]' if item.get('dead', False) else '',
                 author=item['by'],
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 text=clean_hn_text(item['text']),
@@ -113,7 +114,7 @@ def forward_hn(bot, trigger):
         bot.say(
             'Story: {title}{dead} | ▲ {score} | 🗨️ {comments} | {when} | {url}'.format(
                 title=item['title'],
-                dead=' [DEAD]' if item.get('dead') else '',
+                dead=' [DEAD]' if item.get('dead', False) else '',
                 score=item['score'],
                 comments=item['descendants'],
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
