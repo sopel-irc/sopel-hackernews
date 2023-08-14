@@ -68,7 +68,7 @@ def reverse_hn(bot, trigger):
 
         query = bot.memory['last_seen_url'][trigger.sender]
 
-    results = requests.get("https://hn.algolia.com/api/v1/search?query={}".format(query)).json()
+    results = requests.get('https://hn.algolia.com/api/v1/search?query={}'.format(query)).json()
 
     try:
         item = results['hits'][0]
@@ -84,7 +84,7 @@ def reverse_hn(bot, trigger):
             )
         )
     except (IndexError, KeyError, TypeError):
-        bot.say("No HN discussion found for that link.")
+        bot.say('No HN discussion found for that link.')
 
 
 @plugin.url(HN_PATTERN)
@@ -95,7 +95,7 @@ def forward_hn(bot, trigger):
     ).json()
 
     if item is None:
-        bot.say("Item {} not found.".format(trigger.group('ID')))
+        bot.say('Item {} not found.'.format(trigger.group('ID')))
         return
 
     if item['type'] == 'comment':
