@@ -107,7 +107,7 @@ def forward_hn(bot, trigger):
             ),
             truncation=' […]',
         )
-    else:
+    elif item['type'] == 'story':
         domain = urlparse(item['url']).hostname
 
         bot.say(
@@ -116,6 +116,18 @@ def forward_hn(bot, trigger):
                 dead=' [DEAD]' if item.get('dead') else '',
                 score=item['score'],
                 comments=item['descendants'],
+                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
+                url=item['url'],
+            ),
+            truncation=' ' + domain,
+        )
+    elif item['type'] == 'job':
+        domain = urlparse(item['url']).hostname
+
+        bot.say(
+            'Job: {title} | 👤 {author} | 📆 {when} | {url}'.format(
+                title=item['title'],
+                author=item.get('by') or '(nobody)',
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 url=item['url'],
             ),
