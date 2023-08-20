@@ -112,12 +112,13 @@ def forward_hn(bot, trigger):
         domain = urlparse(item['url']).hostname
 
         bot.say(
-            'Story: {title}{dead} | ▲ {score} | 🗨️ {comments} | {when} | {url}'.format(
+            'Story: {title}{dead} | 👤 {author} | 📆 {when} | ▲ {score} | 🗨️ {comments} | {url}'.format(
                 title=item['title'],
                 dead=' [DEAD]' if item.get('dead', False) else '',
+                author=item.get('by') or '(nobody)',
+                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 score=item['score'],
                 comments=item['descendants'],
-                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 url=item['url'],
             ),
             truncation=' ' + domain,
