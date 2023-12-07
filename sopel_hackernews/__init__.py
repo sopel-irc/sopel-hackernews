@@ -98,6 +98,10 @@ def forward_hn(bot, trigger):
         bot.say('Item {} not found.'.format(trigger.group('ID')))
         return
 
+    if item.get('deleted'):
+        bot.say('Item {} is a deleted {}.'.format(item['id'], item['type']))
+        return
+
     if item['type'] == 'comment':
         bot.say(
             'Comment{dead} by {author} ({when}): {text}'.format(
