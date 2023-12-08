@@ -113,29 +113,29 @@ def forward_hn(bot, trigger):
             truncation=' […]',
         )
     elif item['type'] == 'story':
-        domain = urlparse(item['url']).hostname
+        url = item.get('url')
 
         bot.say(
-            'Story: {title}{dead} | 👤 {author} | 📆 {when} | ▲ {score} | 🗨️ {comments} | {url}'.format(
+            'Story: {title}{dead} | 👤 {author} | 📆 {when} | ▲ {score} | 🗨️ {comments}{url}'.format(
                 title=item['title'],
                 dead=' [DEAD]' if item.get('dead', False) else '',
                 author=item.get('by') or '(nobody)',
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 score=item['score'],
                 comments=item['descendants'],
-                url=item['url'],
+                url=(' | ' + url) if url else '',
             ),
-            truncation=' ' + domain,
+            truncation=(' ' + urlparse(url).hostname) if url else ' …',
         )
     elif item['type'] == 'job':
-        domain = urlparse(item['url']).hostname
+        url = item.get('url')
 
         bot.say(
-            'Job: {title} | 👤 {author} | 📆 {when} | {url}'.format(
+            'Job: {title} | 👤 {author} | 📆 {when}{url}'.format(
                 title=item['title'],
                 author=item.get('by') or '(nobody)',
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
-                url=item['url'],
+                url=(' | ' + url) if url else '',
             ),
-            truncation=' ' + domain,
+            truncation=(' ' + urlparse(url).hostname) if url else ' …',
         )
