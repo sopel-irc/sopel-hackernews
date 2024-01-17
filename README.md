@@ -2,6 +2,15 @@
 
 Hacker News plugin for Sopel.
 
+## Development status
+
+The current version is more or less stable, but is still considered beta or
+pre-1.0 due to missing planned features and lack of testing for edge cases. See
+plans for 1.0 at https://github.com/sopel-irc/sopel-hackernews/issues/3
+
+We welcome contributions from anyone who feels like implementing something from
+the 1.0 "wishlist", as well as bug reports and feature suggestions.
+
 ## Installing
 
 Releases are hosted on PyPI, so after installing Sopel, all you need is `pip`:
