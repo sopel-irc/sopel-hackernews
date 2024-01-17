@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=63.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+platforms = ["Linux x86, x86-64"]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["sopel_hackernews"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+readme = { file=["README.md", "NEWS"], content-type="text/markdown" }
+
+[project]
+name = "sopel-hackernews"
+version = "0.1.0"
+description = "Hacker News plugin for Sopel."
+keywords = [
+  "sopel",
+  "plugin",
+  "hackernews",
+  "bot",
+  "irc",
+]
+authors = [
+  { name="dgw", email="dgw@technobabbl.es" },
+]
+
+dynamic = ["readme"]
+license = { text="EFL-2.0" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: Eiffel Forum License (EFL)",
+    "License :: OSI Approved :: Eiffel Forum License",
+    "Topic :: Communications :: Chat :: Internet Relay Chat",
+]
+requires-python = ">=2.7, !=3.0, !=3.1, !=3.2, <4"
+dependencies = [
+    "sopel>=7.1,<9",
+    "requests",
+    # can be rewritten without pytz once we're Sopel 8+ (i.e. Python 3.8+)
+    "pytz",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/sopel-irc/sopel-hackernews"
+"Bug Tracker" = "https://github.com/sopel-irc/sopel-hackernews/issues"
+
+[project.entry-points."sopel.plugins"]
+hackernews = "sopel_hackernews"
