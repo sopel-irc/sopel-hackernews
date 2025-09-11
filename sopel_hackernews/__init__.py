@@ -5,11 +5,10 @@ Hacker News plugin for Sopel.
 """
 from __future__ import unicode_literals, absolute_import, division, print_function
 
-from datetime import datetime
+from datetime import datetime, timezone
 import html
 from urllib.parse import urlparse
 
-import pytz
 import requests
 
 from sopel import plugin
@@ -17,7 +16,7 @@ from sopel.config import types
 from sopel.tools import time
 
 
-HN_PATTERN = 'https?:\/\/news\.ycombinator\.com\/item\?id=(?P<ID>\d+)'
+HN_PATTERN = r'https?:\/\/news\.ycombinator\.com\/item\?id=(?P<ID>\d+)'
 PLUGIN_PREFIX = '[Hacker News] '
 
 
@@ -36,10 +35,10 @@ def clean_hn_text(text):
 
 def get_formatted_timestamp(ts, channel, bot):
     """Get formatted timestamp based on the channel and the bot's settings."""
-    ts = datetime.fromtimestamp(ts, tz=pytz.utc)
+    ts = datetime.fromtimestamp(ts, tz=timezone.utc)
 
     if bot.settings.hackernews.relative_timestamps:
-        now = datetime.now(tz=pytz.utc)
+        now = datetime.now(tz=timezone.utc)
         return time.seconds_to_human(now - ts)
 
     zone = time.get_timezone(
