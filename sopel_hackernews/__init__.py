@@ -138,3 +138,17 @@ def forward_hn(bot, trigger):
             ),
             truncation=(' ' + urlparse(url).hostname) if url else ' …',
         )
+    elif item['type'] == 'poll':
+        url = item.get('url')
+
+        bot.say(
+            '🗳️ {title} | ✅ {choice_count} | 👤 {author} | 📆 {when} | ▲ {score} | 🗨️ {comments}'.format(
+                title=item['title'],
+                choice_count=len(item.get('parts', [])),
+                author=item.get('by') or '(nobody)',
+                when=get_formatted_timestamp(item['time'], trigger.sender, bot),
+                score=item['score'],
+                comments=item['descendants'],
+            ),
+            truncation=' […]',
+        )
