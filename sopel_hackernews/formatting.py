@@ -16,6 +16,7 @@ class HNParser(HTMLParser):
     def __init__(self):
         super().__init__()
         self.result = []
+        self.single_newline_as_space = True
 
     def handle_starttag(self, tag, attrs):
         if tag == 'p':
@@ -26,6 +27,7 @@ class HNParser(HTMLParser):
             self.result.append(CONTROL_ITALIC)
         elif tag == 'pre':
             self.result.append(CONTROL_MONOSPACE)
+            self.single_newline_as_space = False
         # ignore other tags, e.g. <a> just wraps plaintext URLs so handle_data()
         # will deal with those just fine
 
@@ -34,9 +36,13 @@ class HNParser(HTMLParser):
             self.result.append(CONTROL_ITALIC)
         elif tag == 'pre':
             self.result.append(CONTROL_MONOSPACE)
+            self.single_newline_as_space = True
 
     def handle_data(self, data):
-        data = data.replace('\n', ' \N{RETURN SYMBOL} \n')
+        if self.single_newline_as_space:
+            data = data.replace('\n', ' ')
+        else:
+            data = data.replace('\n', ' \N{RETURN SYMBOL} \n')
         self.result.extend([line.lstrip() for line in data.splitlines()])
 
     def get_data(self):
