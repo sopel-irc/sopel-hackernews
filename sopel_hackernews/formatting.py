@@ -6,8 +6,12 @@ from __future__ import annotations
 
 from html import unescape
 from html.parser import HTMLParser
+import re
 
 from sopel.formatting import CONTROL_ITALIC, CONTROL_MONOSPACE
+
+
+CONSECUTIVE_SPACES_RE = re.compile(r' {2,}')
 
 
 class HNParser(HTMLParser):
@@ -49,4 +53,4 @@ class HNParser(HTMLParser):
         """Get the parsed data as a single string."""
         out = ''.join(self.result)
         out = unescape(out).replace('\n', ' \N{RETURN SYMBOL} ')
-        return out
+        return CONSECUTIVE_SPACES_RE.sub(' ', out)
