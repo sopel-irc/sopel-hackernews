@@ -1,19 +1,20 @@
-# coding=utf8
 """sopel-hackernews
 
 Hacker News plugin for Sopel.
 """
-from __future__ import unicode_literals, absolute_import, division, print_function
+from __future__ import annotations
 
 from datetime import datetime, timezone
-import html
 from urllib.parse import urlparse
 
 import requests
 
 from sopel import plugin
 from sopel.config import types
+from sopel.formatting import CONTROL_NORMAL
 from sopel.tools import time
+
+from .formatting import HNParser
 
 
 HN_PATTERN = r'https?:\/\/news\.ycombinator\.com\/item\?id=(?P<ID>\d+)'
@@ -30,7 +31,9 @@ def setup(bot):
 
 def clean_hn_text(text):
     """Deal with HN weirdness like <p> for line breaks, HTML entities, etc."""
-    return html.unescape(text.replace('<p>', ' \N{RETURN SYMBOL} '))
+    parser = HNParser()
+    parser.feed(text)
+    return parser.get_data()
 
 
 def get_formatted_timestamp(ts, channel, bot):
@@ -109,7 +112,9 @@ def forward_hn(bot, trigger):
                 when=get_formatted_timestamp(item['time'], trigger.sender, bot),
                 text=clean_hn_text(item['text']),
             ),
-            truncation=' […]',
+            # reset formatting before truncation string, since the comment text
+            # could be cut off in the middle of italics/monospace/etc.
+            truncation=(CONTROL_NORMAL + ' […]'),
         )
     elif item['type'] == 'story':
         url = item.get('url')
