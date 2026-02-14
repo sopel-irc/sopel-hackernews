@@ -17,7 +17,9 @@ from sopel.tools import time
 from .formatting import HNParser
 
 
-HN_PATTERN = r'https?:\/\/news\.ycombinator\.com\/item\?id=(?P<ID>\d+)'
+HN_BASE = r'https?:\/\/news\.ycombinator\.com\/'
+HN_ITEM_LINK_RE = HN_BASE + r'item\?id=(?P<ID>\d+)'
+HN_USER_LINK_RE = HN_BASE + r'user\?id=(?P<username>[\w-]+)'
 PLUGIN_PREFIX = '[Hacker News] '
 
 
@@ -89,7 +91,7 @@ def reverse_hn(bot, trigger):
         bot.say('No HN discussion found for that link.')
 
 
-@plugin.url(HN_PATTERN)
+@plugin.url(HN_ITEM_LINK_RE)
 @plugin.output_prefix(PLUGIN_PREFIX)
 def forward_hn(bot, trigger):
     item = requests.get(
@@ -157,3 +159,29 @@ def forward_hn(bot, trigger):
             ),
             truncation=' […]',
         )
+
+
+@plugin.url(HN_USER_LINK_RE)
+@plugin.output_prefix(PLUGIN_PREFIX)
+def hn_user(bot, trigger):
+    username = trigger.group('username')
+    if not username:
+        return plugin.NOLIMIT
+
+    user = requests.get(
+        'https://hacker-news.firebaseio.com/v0/user/{}.json'.format(username)
+    ).json()
+
+    if user is None:
+        # HN API is kind of silly and returns null for users that DO exist
+        # but have never commented or submitted links :|
+        bot.say('User {} not found, or has no posts/comments.'.format(username))
+        return
+
+    bot.say(
+        '{id} | 🏆 {karma} karma | 📆 Registered {created}'.format(
+            id=user['id'],
+            karma=user['karma'],
+            created=get_formatted_timestamp(user['created'], trigger.sender, bot),
+        )
+    )
