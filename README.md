@@ -31,6 +31,8 @@ You can search for a link on HN using the `.rhn` command:
 
 ## Credits
 
-Loosely based on [dasu's `hn.py` module](https://github.com/dasu/syrup-sopel-modules/blob/8f644ba4b4cdda06200f18a36959796ae7979fb6/hn.py),
-which was licensed as "literally do whatever you want, i'm not liable for
-anything lol". Thank you for the springboard!
+Loosely based on [dasu's `hn.py` module][dasu-hn.py], which was licensed as
+"literally do whatever you want, i'm not liable for anything lol". Thank you for
+the springboard!
+
+[dasu-hn.py]: https://github.com/dasu/syrup-sopel-modules/blob/8f644ba4b4cdda06200f18a36959796ae7979fb6/hn.py
