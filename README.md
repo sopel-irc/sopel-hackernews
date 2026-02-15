@@ -19,6 +19,19 @@ Releases are hosted on PyPI, so after installing Sopel, all you need is `pip`:
 $ pip install sopel-hackernews
 ```
 
+## Configuring
+
+`sopel-hackernews` supports Sopel's config wizard:
+
+```shell
+$ sopel-plugins configure hackernews
+```
+
+Available settings are as follows:
+
+- `relative_timestamps` — whether timestamps will be "humanized" like "2 days, 3
+  hours ago" (the default) or shown as absolute values
+
 ## Usage
 
 Links to Hacker News items are expanded automatically.

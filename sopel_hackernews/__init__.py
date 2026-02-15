@@ -24,11 +24,22 @@ PLUGIN_PREFIX = '[Hacker News] '
 
 
 class HackerNewsSection(types.StaticSection):
-    relative_timestamps = types.BooleanAttribute('relative_timestamps', default=True)
+    relative_timestamps = types.BooleanAttribute(
+        'relative_timestamps',
+        default=True,
+    )
 
 
 def setup(bot):
     bot.settings.define_section('hackernews', HackerNewsSection)
+
+
+def configure(settings):
+    settings.define_section('hackernews', HackerNewsSection)
+    settings.hackernews.configure_setting(
+        'relative_timestamps',
+        'Use relative timestamps for HN items?',
+    )
 
 
 def clean_hn_text(text):
