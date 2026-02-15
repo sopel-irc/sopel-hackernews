@@ -1,4 +1,18 @@
-0.1.0
-=====
+## Changelog
+
+### 0.2.0
+
+Added:
+* Handle user links (#16)
+* Basic formatting parser (#15)
+* Differentiation of polls from regular stories (#14)
+
+Housekeeping:
+* Require Sopel 8 + Python 3.8 or higher (#11)
+* Future-proof package license metadata (#12)
+* Automate PyPI release publishing (#13)
+
+
+### 0.1.0
 
 Initial release. Considered beta, but largely functional.
