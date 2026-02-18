@@ -19,6 +19,19 @@ Releases are hosted on PyPI, so after installing Sopel, all you need is `pip`:
 $ pip install sopel-hackernews
 ```
 
+## Configuring
+
+`sopel-hackernews` supports Sopel's config wizard:
+
+```shell
+$ sopel-plugins configure hackernews
+```
+
+Available settings are as follows:
+
+- `relative_timestamps` — whether timestamps will be "humanized" like "2 days, 3
+  hours ago" (the default) or shown as absolute values
+
 ## Usage
 
 Links to Hacker News items are expanded automatically.
@@ -31,6 +44,8 @@ You can search for a link on HN using the `.rhn` command:
 
 ## Credits
 
-Loosely based on [dasu's `hn.py` module](https://github.com/dasu/syrup-sopel-modules/blob/8f644ba4b4cdda06200f18a36959796ae7979fb6/hn.py),
-which was licensed as "literally do whatever you want, i'm not liable for
-anything lol". Thank you for the springboard!
+Loosely based on [dasu's `hn.py` module][dasu-hn.py], which was licensed as
+"literally do whatever you want, i'm not liable for anything lol". Thank you for
+the springboard!
+
+[dasu-hn.py]: https://github.com/dasu/syrup-sopel-modules/blob/8f644ba4b4cdda06200f18a36959796ae7979fb6/hn.py
