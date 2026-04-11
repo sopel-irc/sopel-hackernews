@@ -47,7 +47,7 @@ class HNParser(HTMLParser):
             data = data.replace('\n', ' ')
         else:
             data = data.replace('\n', ' \N{RETURN SYMBOL} \n')
-        self.result.extend([line.lstrip() for line in data.splitlines()])
+        self.result.extend(data.splitlines())
 
     def get_data(self):
         """Get the parsed data as a single string."""
