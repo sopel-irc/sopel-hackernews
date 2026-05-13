@@ -16,7 +16,7 @@ readme = { file=["README.md", "NEWS"], content-type="text/markdown" }
 
 [project]
 name = "sopel-hackernews"
-version = "0.1.0"
+version = "0.2.0"
 description = "Hacker News plugin for Sopel."
 keywords = [
   "sopel",
